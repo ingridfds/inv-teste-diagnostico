@@ -1,12 +1,37 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import React, { useState } from 'react';
+import { DiagnosticForm } from '@/components/DiagnosticForm';
+import { DiagnosticResult } from '@/components/DiagnosticResult';
 
 const Index = () => {
+  const [showResult, setShowResult] = useState(false);
+  const [diagnosticData, setDiagnosticData] = useState<{
+    score: number;
+    answers: Record<string, number>;
+  } | null>(null);
+
+  const handleDiagnosticComplete = (score: number, answers: Record<string, number>) => {
+    setDiagnosticData({ score, answers });
+    setShowResult(true);
+  };
+
+  const handleRestart = () => {
+    setShowResult(false);
+    setDiagnosticData(null);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-gradient-secondary">
+      {!showResult ? (
+        <DiagnosticForm onComplete={handleDiagnosticComplete} />
+      ) : (
+        diagnosticData && (
+          <DiagnosticResult
+            score={diagnosticData.score}
+            answers={diagnosticData.answers}
+            onRestart={handleRestart}
+          />
+        )
+      )}
     </div>
   );
 };
